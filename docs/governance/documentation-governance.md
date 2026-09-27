@@ -10,4 +10,4 @@ Core rules:
 - Use lowercase, kebab-case names and stable navigation paths.
 - Update the nav and landing pages whenever content moves.
 
-The canonical governance source remains the repo-root [documentation-governance.md](../../documentation-governance.md).
+The canonical governance source remains the repo-root `documentation-governance.md`.
