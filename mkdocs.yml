@@ -1,0 +1,30 @@
+site_name: Docs
+site_description: Documentation site for study material and project docs
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Governance:
+      - Overview: governance/index.md
+      - Documentation Governance: governance/documentation-governance.md
+  - Collections:
+      - Study Materials:
+          - Overview: collections/study-materials/index.md
+          - AWS AI Practitioner:
+              - Overview: collections/study-materials/aws-ai-practitioner/index.md
+              - Topic 01: collections/study-materials/aws-ai-practitioner/topics/topic-01-amazon-bedrock.md
+              - Topic 02: collections/study-materials/aws-ai-practitioner/topics/topic-02-prompt-engineering.md
+              - Topic 03: collections/study-materials/aws-ai-practitioner/topics/topic-03-rag-vs-finetuning.md
+              - Topic 04: collections/study-materials/aws-ai-practitioner/topics/topic-04-responsible-ai.md
+              - Topic 05: collections/study-materials/aws-ai-practitioner/topics/topic-05-evaluation-metrics.md
+              - Topic 06: collections/study-materials/aws-ai-practitioner/topics/topic-06-ai-ml-fundamentals.md
+              - Topic 07: collections/study-materials/aws-ai-practitioner/topics/topic-07-genai-fundamentals.md
+              - Topic 08: collections/study-materials/aws-ai-practitioner/topics/topic-08-amazon-sagemaker.md
+              - Topic 09: collections/study-materials/aws-ai-practitioner/topics/topic-09-aws-ai-services.md
+              - Topic 10: collections/study-materials/aws-ai-practitioner/topics/topic-10-security-governance.md
+      - Personal Projects: collections/personal-projects/index.md
+      - Reference: collections/reference/index.md
+      - Shared: collections/shared/index.md
+  - Archive: archive/index.md
