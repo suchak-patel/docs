@@ -16,6 +16,18 @@
 
 ---
 
+## In Plain English
+
+Your grandmother's spaghetti bolognese is a great, general recipe — but tonight one guest is gluten-free, another hates dairy, and you want it spicier. You have three ways to adapt it, and they map exactly to the three ways to customize a foundation model.
+
+- **Fine-tuning** is like tweaking the base recipe itself through trial and error until it perfectly suits your guests. You're changing the dish permanently — the model's **weights** are updated. It's powerful for baking in a consistent style or specialized behavior, but it's costly and slow to redo when things change.
+- **RAG** keeps the original recipe untouched but brings a set of **extra notes** into the kitchen (your friend's allergy list). At cooking time you consult the recipe *and* the notes together. Nothing about the model changes; you just retrieve the right facts from your documents and hand them to the model when it answers. Change a policy? Just update the note — no retraining.
+- **An agent** is an automated kitchen assistant. You give it the recipe book, the notes, and a set of **tools** ("boil water," "dice onions," "call the supplier"). It plans the steps, decides which tool to use, and actually *does* the work. RAG only looks things up; an agent takes actions.
+
+The practical rule: start with the cheapest option that works. Try prompt engineering, then RAG, then fine-tuning, and combine them only when you need both current facts *and* a specialized voice. A common surprise for beginners: fine-tuning is **weak at inserting brand-new facts** (like this quarter's prices). For fresh, factual knowledge, RAG is the right tool.
+
+---
+
 ## Overview
 
 Both RAG and fine-tuning improve foundation model performance for specific use cases, but they solve **different problems** through different mechanisms. Choosing the right approach (or combination) is a core exam topic.
@@ -200,6 +212,37 @@ Before investing in RAG or fine-tuning, always try:
 - Amazon Aurora (PostgreSQL with pgvector)
 - Amazon Neptune Analytics
 - Pinecone, Redis, MongoDB (third-party)
+
+---
+
+## How AIF-C01 Actually Tests This
+
+The exam gives you a business scenario and asks which customization approach fits. It's testing whether you can read the *signal words* in the scenario.
+
+**Exam topics you must master:**
+
+- **Signal → approach.** "Frequently changing data" or "private data that must stay current" → **RAG**. "Consistent specialized tone/style" or "stable task like legal review" → **fine-tuning**. "Multi-step task" or "take actions / call APIs" → **agent**.
+- **What each changes.** Fine-tuning changes model **weights** and needs **training data**. RAG changes the **input** (adds retrieved context) and needs a **knowledge base**, not training data. Agents change the **workflow** (plan + tools).
+- **RAG components:** embedding model, vector database, chunking, retrieval (top-K), then the foundation model — with **citations**.
+- **Cost/effort order:** prompt engineering < RAG < fine-tuning < continued pre-training.
+- **Catastrophic forgetting:** over-fine-tuning on a narrow dataset can erode the model's general knowledge — a reason to prefer RAG for facts.
+
+**Trap patterns to watch for:**
+
+- **"Incorporate daily-changing data" → they dangle fine-tuning because it "sounds technical."** The correct answer is **RAG** (cheaper, easier to update).
+- **Multi-step workflow (search → compare → book → confirm) → they suggest RAG.** RAG only retrieves; the correct answer is an **agent**.
+- **"Fine-tuning teaches the model new facts reliably"** → false; it adapts style/behavior. Use **RAG** to add facts.
+- **RAG ≠ training.** "Augmented" refers to augmenting the *input*, not modifying the model.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Fine-tuning is the only way to use your company's private data. **Reality:** RAG lets the model use private data *without* retraining — cheaper, more secure, and instantly updatable.
+- **Misconception:** An agent is just a chatbot with a fancy name. **Reality:** An agent can **take actions** using tools (API calls, database updates, emails); a plain chatbot only generates text.
+- **Misconception:** RAG requires fine-tuning the model on your documents. **Reality:** RAG leaves the model frozen; documents are stored separately and retrieved at query time.
+- **Misconception:** You can fine-tune a model to memorize brand-new factual knowledge (like this quarter's sales figures). **Reality:** Fine-tuning is best for style/behavior; small datasets don't reliably insert facts and can overfit. Use RAG.
+- **Misconception:** RAG and fine-tuning are mutually exclusive. **Reality:** They combine well — fine-tune for domain voice, RAG for current facts.
 
 ---
 

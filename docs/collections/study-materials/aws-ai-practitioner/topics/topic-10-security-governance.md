@@ -29,6 +29,18 @@
 
 ---
 
+## In Plain English
+
+Imagine a busy restaurant kitchen. The head chef (your AI model) turns out great dishes (predictions), but who makes sure the kitchen is clean, the recipes are followed, and nobody cut corners? That's the job of three "inspectors," and they map directly to the three AWS governance tools.
+
+- **AWS CloudTrail** is the **security camera system**. It records every person who entered the kitchen, which door they used, and what they touched. If a batch of soup tastes wrong, you don't accuse anyone — you rewind the footage to see exactly who added the salt and when. CloudTrail logs every **API call**: who did what, when, from where.
+- **AWS Config** is the **master recipe book that constantly checks every dish against the approved recipe**. If someone uses an ingredient that isn't on the approved list (an unauthorized configuration change, like making an S3 bucket public), Config rings an alarm. It tracks **resource configuration** and flags anything that drifts from your rules.
+- **AWS Audit Manager** is the **health inspector who arrives with a pre-printed checklist** from the regulator (HIPAA, GDPR, SOC 2). It doesn't guess the rules — it walks through collecting **evidence** (pulled automatically from CloudTrail and Config) that each control is met, and bundles it into a report you can hand to the auditor.
+
+Sitting above all of this is the **Shared Responsibility Model**: AWS secures the physical kitchen and appliances (security *of* the cloud), while you're responsible for how you use them — who has keys (IAM), whether ingredients are locked up (encryption), and how you run the line (security *in* the cloud).
+
+---
+
 ## AWS Shared Responsibility Model
 
 Security is a **shared responsibility** between AWS and the customer.
@@ -228,6 +240,40 @@ Guardrails enforce safety and compliance policies on GenAI applications:
 - Detect sensitive data with **Macie**
 - Document models with **Model Cards**; review **AI Service Cards**
 - Follow the **Shared Responsibility Model**
+
+---
+
+## How AIF-C01 Actually Tests This
+
+Security and governance is 14% of the exam. Questions give a scenario plus three tools and one distractor; you pick the right one. The whole game is knowing each service's **one-sentence purpose**.
+
+**Exam topics you must master:**
+
+- **One-liners:** CloudTrail = records API activity (who/what/when/where). Config = records resource configuration and checks it against rules. Audit Manager = automates audit evidence collection from CloudTrail + Config.
+- **Who accessed what → CloudTrail** (with **data events** enabled for object-level reads).
+- **Configuration drift / "alert when a security group deviates from baseline" → Config.**
+- **"Prepare for a SOC 2 audit by collecting evidence from our workloads" → Audit Manager.**
+- **Shared Responsibility:** the customer owns IAM, data protection, and configuration; AWS owns the physical/infrastructure layer.
+- **Bedrock data privacy:** prompts/completions aren't used to train base models; keep traffic private with **VPC endpoints/PrivateLink**; encrypt with **KMS**.
+
+**Trap patterns to watch for:**
+
+- **Config vs. CloudTrail:** Config does **not** log who *read* an object — that's a CloudTrail data event. Config tracks the resource's *configuration state*.
+- **Audit Manager vs. AWS Artifact:** Audit Manager collects **your** environment's evidence; Artifact only serves **AWS's** pre-built compliance reports (SOC/ISO/PCI).
+- **CloudTrail vs. CloudWatch Logs:** API audit trail = CloudTrail; application/system logs = CloudWatch Logs.
+- **Distractors:** GuardDuty (threat detection) and Artifact often appear as wrong options.
+- **Multi-service scenarios:** "know *who* changed it AND confirm it now meets a rule" needs **both** CloudTrail and Config.
+- **CloudTrail retention:** 90-day event history is not a hard cap — a **trail** stores logs in S3 indefinitely.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** AWS Config records every time someone reads a file from an S3 bucket. **Reality:** Config records **configuration** changes (who *can* access, encryption settings), not object reads. Object access is a CloudTrail data event.
+- **Misconception:** Audit Manager actively blocks non-compliant actions. **Reality:** It's a reporting/evidence tool — it documents compliance; it doesn't enforce or block.
+- **Misconception:** CloudTrail only keeps 90 days of logs, then they're gone. **Reality:** The console **event history** shows 90 days, but a **trail** delivers logs to S3 for indefinite retention (and CloudTrail Lake for analytics).
+- **Misconception:** AWS Config automatically fixes non-compliant resources. **Reality:** Config **detects and reports**; auto-remediation must be configured separately (e.g., a Systems Manager document).
+- **Misconception:** One tool covers governance. **Reality:** Governance is layered — CloudTrail (actions) + Config (configuration) + Audit Manager (audit evidence) work together.
 
 ---
 

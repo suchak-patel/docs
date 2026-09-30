@@ -18,6 +18,16 @@
 
 ---
 
+## In Plain English
+
+If **Bedrock** is a buffet of ready-made dishes you just scoop onto a plate, **SageMaker** is a fully equipped professional kitchen where you cook your own recipe from scratch. You reach for SageMaker when an off-the-shelf AI service can't solve your specific problem — say, predicting *your* customers' churn or classifying a rare species of bird that no pre-trained model knows.
+
+SageMaker covers the **entire** machine-learning lifecycle in one place. You label raw data with **Ground Truth**, prep and engineer features with **Data Wrangler** and **Feature Store**, build and experiment in **Studio** (or point-and-click in **Canvas**, or start from a pre-built model in **JumpStart**), train with **Training Jobs** (letting **Automatic Model Tuning** search for the best hyperparameters), then **deploy** to an endpoint. After go-live, **Model Monitor** watches for drift, **Model Registry** versions and approves models, and **Model Cards** document them for governance.
+
+The trade-off is control vs. effort. SageMaker gives you full control and requires more ML skill than Bedrock — but tools like **Canvas** (no-code for business analysts) and **JumpStart** (one-click foundation models and templates) lower the barrier so you don't need a PhD to get started.
+
+---
+
 ## What is Amazon SageMaker?
 
 Amazon SageMaker AI is a **fully managed service** to **build, train, and deploy** machine learning models at scale. It covers the entire ML lifecycle in one platform.
@@ -133,6 +143,40 @@ Amazon SageMaker AI is a **fully managed service** to **build, train, and deploy
 | Detect production drift | **SageMaker Model Monitor** |
 | Bias detection & explainability | **SageMaker Clarify** |
 | Off-the-shelf AI (vision, speech, text) | **AWS AI services** — see [topic-09-aws-ai-services.md](topic-09-aws-ai-services.md) |
+
+---
+
+## How AIF-C01 Actually Tests This
+
+The exam rarely asks *how* to configure SageMaker. It asks *which* SageMaker capability fits a scenario, and *when* to choose SageMaker over Bedrock or an AI service.
+
+**Exam topics you must master:**
+
+- **Bedrock vs. SageMaker.** Consume/customize ready-made FMs with little ML skill → **Bedrock**. Build/train/host a **custom** model with full control → **SageMaker**. Common task (translate, detect faces) → **AI service**.
+- **No-code for business analysts → SageMaker Canvas.**
+- **Label a large raw dataset → SageMaker Ground Truth.**
+- **Detect production drift → SageMaker Model Monitor.**
+- **Bias detection + explainability → SageMaker Clarify.**
+- **Version/approve models → Model Registry;** **document for governance → Model Cards.** Don't mix these three (Monitor / Registry / Cards).
+- **Inference type by workload:** live low-latency → real-time endpoint; spiky/intermittent → serverless; large payloads/long jobs → asynchronous; offline bulk scoring → batch transform.
+- **Pre-trained models + templates to start fast → JumpStart.**
+
+**Trap patterns to watch for:**
+
+- **"SageMaker only serves pre-built models"** → false; it's for building/training custom models (Bedrock serves pre-built FMs).
+- **Model Monitor ≠ auto-retrain** — it *detects* drift and alerts; you trigger retraining.
+- **"You need a persistent endpoint for every prediction"** → false; **batch transform** scores large datasets with no standing endpoint.
+- **Canvas vs. Studio:** Canvas = no-code visual; Studio = full IDE for practitioners.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** You need to be a data-science PhD to use SageMaker. **Reality:** Canvas (no-code) and JumpStart (pre-built models/templates) make it approachable; managed training abstracts the infrastructure.
+- **Misconception:** SageMaker is just another way to call pre-built models like Rekognition. **Reality:** SageMaker builds/trains/deploys *your own* custom models; the pre-trained AI services are separate.
+- **Misconception:** Model Monitor automatically fixes or retrains a drifting model. **Reality:** It detects data/quality/bias drift and alerts — remediation (retraining) is a separate action you take.
+- **Misconception:** Every deployment needs a real-time endpoint. **Reality:** Choose by workload — batch transform for offline scoring, serverless for spiky traffic, async for large payloads.
+- **Misconception:** Model Registry, Model Cards, and Model Monitor do the same thing. **Reality:** Registry = versioning/approval; Cards = governance documentation; Monitor = production drift detection.
 
 ---
 

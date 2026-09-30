@@ -22,6 +22,16 @@
 
 ---
 
+## In Plain English
+
+Imagine grading a stack of student essays against an answer key. The fastest way is to count how many of the key's words and phrases show up in each essay — quick and repeatable, but it can't tell that "the feline rested on the rug" means the same as "the cat sat on the mat." That word-counting approach is what **ROUGE** and **BLEU** do: they measure **n-gram overlap** between the model's text and a reference. ROUGE leans on **recall** (how much of the reference the summary captured) and is the go-to for **summarization**; BLEU leans on **precision** with a **brevity penalty** and is the classic **translation** metric.
+
+The problem is that pure word-matching is blind to meaning. **BERTScore** fixes this by reading for *meaning*: it turns both texts into embeddings and compares them semantically, so synonyms and paraphrases score correctly. The trade-off is cost — lexical metrics are cheap and instant; semantic metrics need a model to run.
+
+The practical takeaway is to **match the metric to the task**: summarization → ROUGE, translation → BLEU, question answering → Exact Match/F1, code → Pass@k, semantic similarity → BERTScore. And remember that automated numbers only approximate quality — for chatbots, safety, and nuanced tasks, **human evaluation** is still the gold standard. On AWS, **Amazon Bedrock Model Evaluation** runs both automatic metrics and managed human-review workflows and lets you compare models side by side.
+
+---
+
 ## Why Evaluation Metrics Matter
 
 Foundation models must be evaluated **objectively and systematically** before deployment. Different metrics suit different task types — choosing the wrong metric gives a misleading picture of model quality.
@@ -236,6 +246,37 @@ Amazon Bedrock provides a built-in **Model Evaluation** feature that supports:
 3. Provide evaluation dataset
 4. Run evaluation job
 5. Review results in the console
+
+---
+
+## How AIF-C01 Actually Tests This
+
+The exam checks whether you can **match a metric to a task** and understand the **lexical-vs-semantic trade-off**. You never compute the formulas.
+
+**Exam topics you must master:**
+
+- **Metric → task:** **ROUGE** = summarization (recall, n-gram overlap); **BLEU** = translation (precision + brevity penalty); **BERTScore** = semantic similarity (embeddings); **Perplexity** = language-model quality (lower is better); **Exact Match / F1** = question answering; **Pass@k / HumanEval** = code generation; **MMLU** = general knowledge.
+- **Lexical vs. semantic.** ROUGE/BLEU are fast and reproducible but miss paraphrase; BERTScore captures meaning but costs more compute.
+- **BLEU's brevity penalty** discourages ultra-short translations even when the words are correct.
+- **Human evaluation** is the gold standard for coherence, helpfulness, and safety.
+- **Amazon Bedrock Model Evaluation** provides both automatic metrics and managed human evaluation, and compares models side by side.
+
+**Trap patterns to watch for:**
+
+- **Identical ROUGE, different quality:** ROUGE only counts word overlap, so a fluent paraphrase can score the same as a clumsy copy — that's why BERTScore exists.
+- **Using ROUGE for translation or BLEU for summarization** — know the canonical pairing.
+- **Perplexity direction:** lower = better (a common reversal trap).
+- **Accuracy on imbalanced data** is misleading — prefer F1 (see [topic-06-ai-ml-fundamentals.md](topic-06-ai-ml-fundamentals.md)).
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** A high ROUGE score means a genuinely good summary. **Reality:** ROUGE only measures lexical overlap with a reference; a summary can score well by copying words yet read poorly, or score low despite a great paraphrase.
+- **Misconception:** BLEU reflects sentence-level translation quality well. **Reality:** BLEU correlates better at the corpus level; at the sentence level it can penalize valid alternative phrasings.
+- **Misconception:** One metric works for every task. **Reality:** Metrics are task-specific — summarization, translation, QA, and code each have their own canonical metric.
+- **Misconception:** Automated metrics can replace human evaluation. **Reality:** For dialogue, helpfulness, and safety, human review remains the gold standard; automated metrics only approximate quality.
+- **Misconception:** BERTScore and ROUGE measure the same thing more precisely. **Reality:** ROUGE matches exact tokens; BERTScore compares *meaning* via embeddings — fundamentally different approaches.
 
 ---
 

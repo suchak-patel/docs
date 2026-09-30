@@ -20,6 +20,16 @@
 
 ---
 
+## In Plain English
+
+Imagine a head chef at a world-famous restaurant. Over years, they've developed **master recipes** — the fundamental techniques and ratios for their signature dishes. When a guest orders, the chef doesn't reinvent the dish; they take the master recipe and adapt it (a pinch of chili here, dark chocolate instead of milk there). A **foundation model** is that master recipe: a huge, general-purpose model pre-trained on an enormous, mostly **unlabeled** pile of internet text, books, and code. It knows a little about almost everything, but it's an expert in nothing specific until you adapt it.
+
+Here's the crucial mental shift. Older "analytical" AI was a smart filing clerk — show it a photo and it tells you "cat" or "dog." That's **discriminative** AI: it labels or classifies things that already exist. **Generative** AI is a creative machine — it produces a *new* cat photo, writes a *new* email, drafts *new* code. A **Large Language Model (LLM)** is a foundation model specialized for text. Under the hood it does something surprisingly simple: it predicts the **next token** (a word or word-piece) over and over. That's why it's so fluent — and also why it can **hallucinate**: it outputs the statistically likely next words, not verified facts.
+
+A few terms the exam leans on. A **token** is a chunk of text ("cloud" might be one token; pricing and limits are counted in tokens). The **context window** is how much text the model can "see" at once. **Embeddings** turn text into vectors of numbers so similar meanings sit close together — the engine behind semantic search and RAG. And **parameters** are the model's learned "knobs"; billions of them give the model its nuance. To adapt a foundation model, start cheap and climb only as needed: prompt engineering → RAG → fine-tuning → continued pre-training.
+
+---
+
 ## What is Generative AI?
 
 Generative AI is a type of deep learning that **creates new content** — text, images, audio, video, or code — based on patterns learned from massive datasets. Unlike traditional (discriminative) ML that **classifies or predicts labels**, generative AI **produces novel output**.
@@ -207,6 +217,38 @@ See [topic-02-prompt-engineering.md](topic-02-prompt-engineering.md) for details
 | **Stop sequences** | Strings that end generation | — |
 
 > **Exam tip:** For **factual, deterministic** tasks use **low temperature**. For **creative** tasks use **higher temperature**.
+
+---
+
+## How AIF-C01 Actually Tests This
+
+This domain is 24% of the exam. Questions test definitions with surgical precision — the traps live in the wording.
+
+**Exam topics you must master:**
+
+- **Generative vs. discriminative.** Creating new content (text, image, code) = generative. Labeling/classifying existing data (spam filter, fraud detection) = discriminative. Most real-world AI is still discriminative.
+- **Foundation model definition.** A large model **pre-trained on broad, unlabeled data using self-supervised learning**, adaptable to many downstream tasks. An **LLM** is a foundation model for text.
+- **Model output type identifies the model.** Text out = LLM; image out = image-generation model; text **and** image in/out = multi-modal. Judge by what the model actually *produces*.
+- **Terminology:** token (unit of text, billing/limits), context window (max tokens seen at once), hallucination (confident but false output), parameters (learned weights).
+- **Bedrock provides FMs; SageMaker builds custom models.** "Managed, serverless API for pre-built FMs" → Bedrock.
+
+**Trap patterns to watch for:**
+
+- **"A fine-tuned medical model is a foundation model"** → false. Once adapted to a narrow task it's a *fine-tuned/customized* model, not the general-purpose FM.
+- **"An FM was trained on 1,000 labeled chats"** → false. FMs pre-train on **massive unlabeled** data; labeled data is used later for fine-tuning.
+- **"An LLM that returns a link to an image is an image-generation model"** → false; that's text output from an LLM.
+- **"Use SageMaker for a managed FM API"** → false; that's Bedrock's job.
+- **Confusing parameters (learned weights) with inference parameters (temperature, top-p).**
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Generative AI is conscious or "understands" like a human. **Reality:** It's a pattern-matcher predicting the next token from statistics. When it says "I'm happy," it's emitting likely text, not feeling anything.
+- **Misconception:** A foundation model works perfectly out of the box for any task. **Reality:** It's a talented generalist that usually needs adaptation (prompting, RAG, or fine-tuning) to be reliable for a specific job; a raw model can give wrong or unsafe answers.
+- **Misconception:** LLMs learn facts like a person reading a textbook. **Reality:** They learn statistical relationships between words. They have no live fact database, so knowledge freezes at training time — use RAG for current facts.
+- **Misconception:** All AI is generative AI. **Reality:** Most production AI (spam filters, recommendations, fraud detection) is analytical/discriminative; generative AI is one sub-category that creates new content.
+- **Misconception:** Bigger context window means the model "remembers" past conversations forever. **Reality:** The window is a per-request limit; anything outside it (or a prior stateless call) is not retained unless you resend it.
 
 ---
 

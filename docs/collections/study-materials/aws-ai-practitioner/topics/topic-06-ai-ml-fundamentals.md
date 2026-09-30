@@ -20,6 +20,16 @@
 
 ---
 
+## In Plain English
+
+Think about a traditional recipe book: mix 200g flour, 2 eggs, bake at 180°C for 30 minutes. The rules are fixed, so the result is predictable. That's **traditional programming** — a human writes every rule. Now imagine teaching someone to judge a *good* cake by taste, without giving exact proportions. You let them taste hundreds of cakes, each time saying "good" or "bad," until they build a mental model of what works. That's **machine learning** — the computer learns patterns from labeled examples instead of hand-written rules.
+
+Every ML system runs the same loop. During **training**, you feed the model labeled examples (features like bedrooms and square footage; the label is the sale price). It makes a guess, measures how wrong it was, and nudges its internal "knobs" to guess better — repeated many times. During **evaluation**, you test it on a **held-out** set it never saw, because grading it on the data it trained on is like giving a student the exam answers in advance. Only when it passes do you move to **inference**: running the finished model on brand-new, real-world data. Crucially, the model does **not** learn during inference — its parameters are frozen.
+
+Two failure shapes come up constantly. **Overfitting** is memorizing the training data (99% on training, 55% on the test set) — like memorizing answers instead of understanding the subject. **Underfitting** is a model too simple to capture the pattern (low on both). And when the world shifts after deployment — customers change habits, fraudsters invent new tricks — accuracy drifts (**concept drift**), so you retrain. That's why the lifecycle is a loop, not a one-time build.
+
+---
+
 ## The AI Hierarchy
 
 Understanding how these terms nest is a common exam question.
@@ -292,6 +302,39 @@ How you measure model quality depends on the task type. You don't need to calcul
 - You lack sufficient quality data
 - You need fully explainable, guaranteed-correct outputs (safety-critical hard constraints)
 - The cost/effort of building and maintaining ML outweighs the benefit
+
+---
+
+## How AIF-C01 Actually Tests This
+
+Domain 1 is 20% of the exam. Expect scenario questions that ask **which phase** is happening or **which concept** a situation illustrates.
+
+**Exam topics you must master:**
+
+- **Identify the lifecycle phase.** "Model classifies images in a production app" → **inference**. "Model is tested on a held-out labeled dataset" → **evaluation**. "Model is retrained on new data" → **training**.
+- **Why a separate test set exists:** evaluating on training data inflates the score because the model already saw the answers (that's how overfitting hides).
+- **Overfitting vs. underfitting.** High train / low test = overfitting. Low on both = underfitting.
+- **What the metrics measure (no calculation needed):** **precision** is about avoiding **false positives**; **recall** is about avoiding **false negatives**; **F1** balances the two; **accuracy** is misleading on imbalanced data.
+- **Features vs. labels.** Features are the inputs; the label is the correct output, present only in training/evaluation data.
+- **The lifecycle is iterative.** Poor results → collect more data / change features / retrain. That's normal iteration, not failure.
+
+**Trap patterns to watch for:**
+
+- **Predictions on new production data → inference, not evaluation.** Evaluation requires known labels to compare against.
+- **"Model retrained with new data" → training,** not inference.
+- **Dataset ≠ model.** The dataset is the raw examples; the model is the learned patterns.
+- **99.9% training accuracy but 55% on test → overfitting** (memorization), not "a great model."
+- **More data isn't always better** — noisy or irrelevant data, or an underfitting model, won't improve with volume.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Training and inference happen at the same time — the model keeps learning as it serves predictions. **Reality:** They're separate phases; during inference the parameters are fixed. Online learning exists but is rare and risky.
+- **Misconception:** Evaluation just means "does the code run without errors." **Reality:** Evaluation measures how well predictions match known answers on a test set — it's about accuracy metrics, not debugging.
+- **Misconception:** The training and test sets are the same data, just shuffled. **Reality:** They're separate, non-overlapping subsets; the test set is held out completely to give an honest score.
+- **Misconception:** More training data always improves a model. **Reality:** Data quality and relevance matter as much as quantity; garbage in, garbage out.
+- **Misconception:** 100% accuracy on training data means the best model. **Reality:** It's a red flag for overfitting — the model likely memorized noise and will generalize poorly.
 
 ---
 

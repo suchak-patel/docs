@@ -17,6 +17,16 @@
 
 ---
 
+## In Plain English
+
+Think about asking a friend for a recipe. If you just say "give me a cake recipe," you'll get something generic — that's a **zero-shot** prompt: a plain instruction with no examples. If instead you show them two cakes you love and say "make me something like these," you're doing **few-shot** prompting — you provide a handful of examples so the model copies the pattern and format. And if the recipe needs a tricky technique like tempering chocolate, you'd spell out the steps in order ("first chop, then heat to 45°C, then cool to 27°C...") — that's **chain-of-thought**: you ask the model to reason step by step before answering.
+
+Prompt engineering is simply the craft of asking the right question in the right way. You are **not** retraining the model — you are shaping its input so a model that already knows a lot gives you the specific, well-formatted answer you need. It is the cheapest and fastest way to improve output: no data collection, no GPUs, no waiting.
+
+A quick worked example. Zero-shot: *"Translate to French: 'The cat sat on the mat.'"* Few-shot: show *"Review: arrived late → Negative"* and *"Review: excellent quality → Positive"*, then ask the model to label a new review. Chain-of-thought: *"What is 24 × 37? Let's think step by step"* — the model computes 20×37 = 740, 4×37 = 148, adds them to 888, and is far less likely to slip than if it blurted a single number.
+
+---
+
 ## What is Prompt Engineering?
 
 Prompt engineering is the practice of **optimizing textual input** to a Large Language Model (LLM) to obtain desired responses. It helps LLMs perform a wide variety of tasks including classification, question answering, code generation, creative writing, summarization, and more.
@@ -248,6 +258,38 @@ response = bedrock.converse(
 5. Use **negative constraints**: "Do not include personal opinions."
 6. **Iterate** — test multiple phrasings and compare outputs
 7. For long documents, put instructions **after** the document (recency bias)
+
+---
+
+## How AIF-C01 Actually Tests This
+
+The exam gives you a short scenario and asks you to **name the technique** or **pick the best one**. You never write code or calculate token counts — you recognize the pattern.
+
+**Exam topics you must master:**
+
+- **Identify the technique from a description.** If the prompt includes example input→output pairs, it is **few-shot**. If it asks the model to reason or "think step by step," it is **chain-of-thought**. If it is just a task with no examples and no reasoning request, it is **zero-shot**.
+- **Match the technique to the task.** Simple, common tasks (translation, summarization) → zero-shot. Tasks needing a specific format or nuanced labels → few-shot. Multi-step arithmetic, logic, planning, or diagnosis → chain-of-thought.
+- **Know the trade-offs.** Few-shot is more accurate than zero-shot but uses **more tokens** (higher cost). Chain-of-thought improves reasoning but produces **longer, slower** outputs. If a scenario stresses limited input length or low cost, lean toward zero-shot.
+- **Temperature intuition.** Low temperature (0–0.2) = factual, deterministic, consistent formatting. High temperature (0.7–1.0) = creative, varied.
+- **Know what a "prompt" is:** the text **input** to the model — not the output, and not a training dataset.
+
+**Trap patterns to watch for:**
+
+- **Few-shot ≠ fine-tuning.** Few-shot puts examples *in the prompt*; the model's weights never change and it forgets the examples after the call. Fine-tuning retrains weights. This is the single most common trap.
+- **Chain-of-thought is not just for math.** Any step-by-step problem qualifies — writing a plan, troubleshooting a device, explaining a decision.
+- **Zero-shot is not automatically "worse."** For simple tasks it's the right, cheaper choice; don't add examples just because you can.
+- **Read carefully:** a prompt with only a question and no examples is **zero-shot**, even if you personally think it "needs" examples.
+- **"Few-shot learning"** (training on a few examples) is a different ML concept; the exam means **few-shot prompting** (examples in the prompt).
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Few-shot prompting retrains the model on the examples you provide. **Reality:** The examples live only in the prompt; the model's parameters are unchanged and the examples are forgotten after the response. The name collides with "few-shot *learning*," which causes the confusion.
+- **Misconception:** Chain-of-thought only helps with arithmetic. **Reality:** It helps any task that benefits from explicit intermediate reasoning — logic, planning, multi-step troubleshooting, and structured explanations.
+- **Misconception:** More examples always mean better results. **Reality:** For simple tasks, zero-shot is adequate and cheaper; extra examples just burn tokens. Choose the technique that fits the task.
+- **Misconception:** You must say the exact words "Let's think step by step" for chain-of-thought. **Reality:** Any instruction that elicits reasoning steps counts.
+- **Misconception:** The model remembers your few-shot examples for future users. **Reality:** Each request is independent; nothing is retained across calls unless you resend it.
 
 ---
 

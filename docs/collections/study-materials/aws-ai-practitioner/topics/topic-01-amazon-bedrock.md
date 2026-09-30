@@ -16,6 +16,16 @@
 
 ---
 
+## In Plain English
+
+Picture a huge buffet line. Each steaming tray is a **foundation model** already cooked by a world-class chef — Anthropic (Claude), Meta (Llama), Amazon (Nova/Titan), Stability AI (images), and more. Instead of spending weeks cooking from scratch in your own kitchen (training a model), you grab a plate and point at the tray you want. You don't need to know how the chef simmered the broth; you just pick the tray that suits your appetite (your use case — chatbot, summarization, image generation). You pay only for what you scoop onto your plate, and the kitchen (AWS infrastructure) never runs out.
+
+That buffet is **Amazon Bedrock**: one managed, serverless service that lets you discover, test, and call many pre-built models through a **single API**. Because the API is the same across providers, you can swap Claude for Llama without rewriting your app. AWS hosts the models, handles scaling and security, and — importantly — does **not** use your prompts or data to train the base models for anyone else.
+
+You can also customize your portion. Want extra spice? **Fine-tune** the model on your own data to match your tone. Want the dish served with today's facts? Attach a **Knowledge Base** so the model retrieves your documents at answer time (**RAG**) instead of guessing. Want a bouncer checking every plate for anything unsafe? Add **Guardrails**. And before you commit, you can taste-test any model for free in the no-code **playground** inside the AWS Console.
+
+---
+
 ## What is Amazon Bedrock?
 
 Amazon Bedrock is a **fully managed service** that provides secure, enterprise-grade access to high-performing foundation models (FMs) from leading AI companies. It enables you to build and scale generative AI applications **without managing infrastructure**.
@@ -200,6 +210,40 @@ response = bedrock.apply_guardrail(
 | Call center summarization | Sensitive information filters (mask PII) |
 | RAG application | Contextual grounding checks (detect hallucinations) |
 | Code generation | Standard tier content filters for code |
+
+---
+
+## How AIF-C01 Actually Tests This
+
+Bedrock is one of the most heavily tested services. The exam checks whether you understand what Bedrock *is*, how you *customize* models, and the *security* guarantees.
+
+**Exam topics you must master:**
+
+- **Bedrock = managed access to FMs from *multiple* providers**, not just Amazon's own models. Remember the roster: Anthropic (Claude), Meta (Llama), Amazon (Nova/Titan), Stability AI (images), Cohere, Mistral, and more.
+- **Inference vs. customization.** *Inference* = send a prompt, get a response from a pre-trained model. *Customization* = **fine-tuning** (retrain weights on your data) or **RAG via Knowledge Bases** (retrieve your documents at query time, no retraining).
+- **"Use my documents without retraining" → RAG (Knowledge Bases).** Source documents live in **Amazon S3**.
+- **Data privacy facts:** encrypted in transit and at rest; your prompts/completions are **not** used to train the base models or shared with providers; access is controlled with **IAM**.
+- **Guardrails** provide model-independent safety: content filters, denied topics, word filters, PII masking, contextual grounding (hallucination detection), automated reasoning.
+- **Playground** = no-code console interface to test/compare models before building.
+- **Converse API** = recommended unified, multi-turn interface across models.
+
+**Trap patterns to watch for:**
+
+- **"Bedrock only has Amazon Titan/Nova models"** → false; it's multi-provider.
+- **Fine-tuning vs. RAG confusion:** if the need is *current or private facts*, the answer is **RAG**; if it's *tone/style/format*, the answer is **fine-tuning**.
+- **"Your data trains the shared model"** → false; your data stays private to your account.
+- **"You must build/train a model to use Bedrock"** → false; models are pre-built.
+- **Bedrock vs. SageMaker:** Bedrock = consume/customize ready-made FMs with minimal ML skill; SageMaker = build/train/host custom models with full control.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Amazon Bedrock only offers Amazon's own models. **Reality:** It's a multi-provider catalog — Anthropic, Meta, Amazon, Stability AI, Cohere, Mistral, and others — all behind one API. The name makes it *sound* Amazon-only.
+- **Misconception:** Using Bedrock means training a model from scratch for each use case. **Reality:** The models are pre-trained; you use them as-is or lightly customize with fine-tuning or RAG. Training from scratch is a SageMaker job, and rarely needed.
+- **Misconception:** Fine-tuning and RAG are the same. **Reality:** Fine-tuning changes the model's weights using labeled examples; RAG leaves the model unchanged and injects retrieved documents into the prompt. RAG is the right tool for fresh or private facts.
+- **Misconception:** Your confidential prompts are used to improve the shared model. **Reality:** AWS states your data is encrypted and not used to train the base models for other customers.
+- **Misconception:** You must write code just to try a model. **Reality:** The Bedrock **playground** lets you type prompts and compare models with no code.
 
 ---
 

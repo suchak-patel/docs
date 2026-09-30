@@ -32,6 +32,16 @@
 
 ---
 
+## In Plain English
+
+Picture a busy restaurant manager drowning in tasks: reading handwritten reservation notes, checking photos of dishes, typing menu changes, listening to voicemails, and answering the same diner questions over and over. Instead of doing it all, they hire a team of narrow specialists — one reads handwriting into typed text, one identifies what's in a photo, one listens to a voicemail and summarizes the complaint, one reads the menu aloud, one handles common questions. Each assistant has a single talent, and together they free the manager to focus on the big picture.
+
+That's exactly what AWS AI services are. Your **application** is the manager; each service is a **specialist assistant** you call through an API. You don't build or train any machine learning — AWS already trained these models on massive datasets. You send data in and get a result back: send an image to **Rekognition** and get a list of objects and a **confidence score**; send a scanned form to **Textract** and get structured key-value data; send text to **Comprehend** and get sentiment and entities; send text to **Polly** and get lifelike audio; send audio to **Transcribe** and get a transcript; send text to **Translate** and get another language; wire up **Lex** and get a chatbot that understands intent.
+
+The real skill — and what the exam tests — is **orchestration**: picking the right specialist for each task and chaining them. A classic pipeline: a customer speaks → Transcribe turns speech to text → Translate converts the language → Lex figures out the intent and triggers a Lambda function → Polly reads the answer back. You focus on the business logic; AWS handles the AI.
+
+---
+
 ## The AWS AI/ML Stack (3 Layers)
 
 | Layer | Description | Examples |
@@ -255,6 +265,41 @@ User hears response (audio)
 | **Fraud** detection | **Fraud Detector** |
 | Use/customize **foundation models** | **Bedrock** |
 | Build **custom** ML models | **SageMaker** |
+
+---
+
+## How AIF-C01 Actually Tests This
+
+This is the highest-frequency question style on the exam: a short business scenario, and you pick the right service. Master the mapping and the sound-alike traps and these become free points.
+
+**Exam topics you must master:**
+
+- **Key phrase → service** (say it instantly, before reading the options): "video/photo/faces" → **Rekognition**; "scanned form/invoice/table" → **Textract**; "sentiment/entities/PII in text" → **Comprehend**; "speech to text" → **Transcribe**; "text to speech" → **Polly**; "translate text" → **Translate**; "chatbot/intent" → **Lex**; "enterprise search" → **Kendra**; "GenAI assistant over company data" → **Q Business**.
+- **Direction of conversion.** Polly = text→speech; Transcribe = speech→text. Read the arrow in the scenario.
+- **Pipelines.** "Speak German → to text → translate to English → read aloud" = **Transcribe → Translate → Polly**. Add **Lex** only when a back-and-forth conversation with intent is required.
+- **Pre-trained vs. custom.** Common task (face detection, translation) → pre-built AI service. Unique problem (classify rare bird species, your own products) → **SageMaker** (or a service's custom feature like Rekognition Custom Labels).
+- **Lex is self-contained for voice:** it has built-in ASR and TTS, so you don't separately need Transcribe + Polly for a voice bot.
+
+**Trap patterns to watch for:**
+
+- **Rekognition vs. Textract:** "read text from an image/form" is **Textract**, not Rekognition. Rekognition finds objects/faces/scenes.
+- **Comprehend vs. Lex:** Comprehend *analyzes* static text; it does **not** hold a conversation. Chatbots → Lex.
+- **Comprehend vs. Translate:** understanding meaning (sentiment/entities) = Comprehend; changing language = Translate.
+- **Transcribe vs. Translate:** they sound alike — Transcribe is audio→text (same language); Translate is text→text (new language).
+- **"Which service would NOT be used to analyze a video?"** → Textract or Comprehend (they work on documents/text; Rekognition does video).
+- **"No code needed"** is a distractor — the console is for testing; production integration needs SDK/Lambda code.
+
+---
+
+## Common Misconceptions
+
+- **Misconception:** Rekognition can extract structured data (tables, forms) from a scanned receipt. **Reality:** Rekognition detects objects/faces/scenes and can spot text *in* images, but structured document extraction is **Textract's** job.
+- **Misconception:** Comprehend can build a chatbot. **Reality:** Comprehend analyzes static text with no memory or dialogue. Chatbots need **Lex**.
+- **Misconception:** Polly understands what it reads and adjusts by meaning. **Reality:** Polly converts text to speech using punctuation and SSML tags, not comprehension.
+- **Misconception:** Textract can analyze video. **Reality:** Textract works on static documents/images; video analysis is **Rekognition**.
+- **Misconception:** Transcribe can translate while transcribing. **Reality:** Transcribe outputs text in the *same* language; translation is a separate **Translate** step.
+- **Misconception:** Lex automatically supports every language. **Reality:** You configure each language version (intents, utterances) separately.
+- **Misconception:** These services need no code. **Reality:** The console is for testing; real applications call them via the AWS SDK, usually from Lambda.
 
 ---
 
