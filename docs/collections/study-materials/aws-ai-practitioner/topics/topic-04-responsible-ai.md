@@ -5,6 +5,17 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **Responsible AI pillars:** fairness, explainability, privacy & security, transparency, robustness, governance.
+- **Bias origin:** **pre-training** (data — class imbalance, historical, sample, label, measurement) vs **post-training** (model — disparate impact, feedback loop, automation bias).
+- **SageMaker Clarify** = **bias detection** (pre/post-training metrics) + **explainability** (SHAP, PDPs) + drift monitoring.
+- **SHAP:** feature attribution — **global** (overall importance) vs **local** (single prediction).
+- **AI Service Cards** (AWS authors, for AWS AI services) vs **Model Cards** (you author, for your models).
+- **Hallucination mitigation:** RAG, Guardrails contextual grounding, prompt grounding, low temperature, human review.
+
+---
+
 ## What is Responsible AI?
 
 Responsible AI refers to the practice of designing, developing, and deploying AI systems that are **fair, transparent, explainable, safe, and accountable** — minimizing harm to individuals and society.

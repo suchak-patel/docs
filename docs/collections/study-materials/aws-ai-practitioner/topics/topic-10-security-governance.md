@@ -7,6 +7,28 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+| Need | Service |
+|------|---------|
+| Control **who** can access a model/resource | **IAM** (least privilege, roles) |
+| Keep AI traffic **off the public internet** | **VPC endpoints / PrivateLink** |
+| Encrypt data **at rest** | **KMS** (customer-managed keys) |
+| Encrypt data **in transit** | **TLS/HTTPS** |
+| **Who did what, when** (API audit trail) | **CloudTrail** |
+| Monitor metrics/logs/alarms | **CloudWatch** |
+| Track **resource config** & compliance rules | **AWS Config** |
+| Automate **compliance audit** evidence | **AWS Audit Manager** |
+| Download AWS **compliance reports** (SOC/ISO/PCI) | **AWS Artifact** |
+| Discover **PII in S3** | **Amazon Macie** |
+| Responsible-AI transparency for AWS services | **AI Service Cards** |
+| Governance docs for **your** models | **SageMaker Model Cards** |
+| Content safety / PII filtering on GenAI | **Bedrock Guardrails** |
+
+**Mental model:** CloudTrail is **reactive** (records events), Config is **proactive** (checks rules), Audit Manager is **organizational** (bundles evidence for auditors). Under the **Shared Responsibility Model**, AWS secures the cloud; **you** secure what's *in* it (IAM, data, config).
+
+---
+
 ## AWS Shared Responsibility Model
 
 Security is a **shared responsibility** between AWS and the customer.
@@ -108,6 +130,49 @@ Document **your own** models for governance:
 | **AWS Trusted Advisor** | Best-practice checks (security, cost, performance) |
 
 > **Exam tip:** "Who invoked this model / audit trail" → **CloudTrail**. "Monitor performance/metrics" → **CloudWatch**. "Get compliance certifications" → **AWS Artifact**. "Find PII in S3" → **Macie**.
+
+---
+
+## Governance & Auditability Deep Dive (CloudTrail vs. Config vs. Audit Manager)
+
+These three services are the core of AI governance and a favorite exam trap. Learn the one-sentence purpose of each.
+
+| Service | One-line purpose | Nature |
+|---------|------------------|--------|
+| **CloudTrail** | Records every **API call** — who did what, when, from where | **Reactive** (records after the fact) |
+| **AWS Config** | Records **resource configuration** changes and evaluates them against rules | **Proactive** (checks compliance rules) |
+| **AWS Audit Manager** | Automates **audit evidence** collection from CloudTrail + Config | **Organizational** (bundles for auditors) |
+
+### AWS CloudTrail
+
+- Logs the **who / what / when / from where** of every API call
+- **Management events** (create/delete resources) logged by default; **data events** (reading an object inside an S3 bucket) must be **explicitly enabled**
+- **Event history** shows the last **90 days**; create a **trail** to store logs indefinitely in S3, or use **CloudTrail Lake** for long-term analytics
+- **CloudTrail Insights** flags unusual activity (e.g., mass download at 3 AM)
+- Query logs with **Amazon Athena** (SQL over the log files)
+
+> **Trap:** CloudTrail records *who accessed* an object (with data events on); Config does **not** log object reads.
+
+### AWS Config
+
+- Tracks the **configuration state** of resources over time (a "configuration item" per point in time)
+- **Config rules** (AWS-managed or custom) enforce policies, e.g., `s3-bucket-public-read-prohibited`, encryption enabled, required tags present
+- Flags **non-compliance** (configuration drift) and can alert via SNS
+- Does **not** auto-fix by itself — needs **auto-remediation** (e.g., a Systems Manager document) configured separately
+
+> **Trap:** "A security group was opened to the public; alert when config deviates from baseline" → **Config** (CloudTrail only tells you *who* made the change).
+
+### AWS Audit Manager
+
+- Continuously collects **evidence** to prepare for external audits
+- Provides **pre-built frameworks** for common standards (HIPAA, GDPR, SOC 2, PCI DSS)
+- A **control** is a requirement (e.g., "data encrypted at rest"); **evidence** is the proof (a CloudTrail log or Config snapshot)
+- Automatically maps evidence from CloudTrail and Config to controls; generates shareable reports
+- Is a **reporting/evidence** tool — it does **not** block actions
+
+> **Audit Manager vs. AWS Artifact:** Audit Manager collects **your own** environment's evidence for audits; **Artifact** provides **AWS's** pre-built compliance reports (SOC, ISO, PCI). "Prepare for a SOC 2 audit by collecting evidence from your workloads" → **Audit Manager**; "download AWS's SOC 2 report" → **Artifact**.
+
+> **Multi-service scenarios:** "Know *who* modified a resource AND confirm it now meets a rule" → needs **both** CloudTrail (who) **and** Config (rule). Watch for a distractor like **GuardDuty** (threat detection) or **CloudWatch Logs** (application logs, not API audit).
 
 ---
 
@@ -217,6 +282,41 @@ Guardrails enforce safety and compliance policies on GenAI applications:
 - C) Configuring IAM permissions and data access controls
 - D) Maintaining the availability of the Bedrock service
 
+**Q8.** A security group protecting an AI model's EC2 instance was changed to expose a port publicly. The team wants to be automatically flagged whenever resource configuration drifts from a secure baseline. Which service should they use?
+
+- A) AWS CloudTrail
+- B) AWS Config
+- C) Amazon CloudWatch
+- D) AWS Artifact
+
+**Q9.** A company is preparing for a SOC 2 audit and needs to automatically collect evidence from its own AWS workloads that security controls are met. Which service fits best?
+
+- A) AWS Artifact
+- B) AWS Audit Manager
+- C) AWS CloudTrail
+- D) Amazon Macie
+
+**Q10.** A regulator asks a company to prove which IAM user read objects from an S3 bucket of AI training data on a specific date. What must be enabled to capture this?
+
+- A) AWS Config rules
+- B) CloudTrail **data events**
+- C) CloudWatch alarms
+- D) Macie classification jobs
+
+**Q11.** Which statement about CloudTrail retention is correct?
+
+- A) Logs are permanently deleted after 90 days with no option to retain them
+- B) The event history keeps 90 days, but a trail can store logs indefinitely in S3
+- C) CloudTrail retains all logs for exactly 7 years automatically
+- D) Retention is managed only by AWS Config
+
+**Q12.** A team needs both to identify *who* changed a resource and to confirm the resource now complies with a rule. Which combination is correct?
+
+- A) CloudTrail only
+- B) Config only
+- C) CloudTrail (who) + Config (rule)
+- D) Audit Manager only
+
 ---
 
 **Answers:**
@@ -226,8 +326,9 @@ Guardrails enforce safety and compliance policies on GenAI applications:
 4. A — AWS Artifact provides compliance reports
 5. B — AI Service Cards provide responsible-AI transparency documentation
 6. A — Amazon Macie discovers and protects PII in S3
-7. C — Customers manage IAM and data access (security "in" the cloud)# Topic 10: Security, Compliance, and Governance
-
-This page is the new collection location for the security, compliance, and governance study topic.
-
-The detailed content will be migrated here from the legacy `aws-ai-practitioner/` source page.
+7. C — Customers manage IAM and data access (security "in" the cloud)
+8. B — Config detects configuration drift against rules (CloudTrail only says who changed it)
+9. B — Audit Manager collects your own environment's evidence; Artifact only serves AWS's reports
+10. B — Object-level reads require CloudTrail data events (off by default)
+11. B — 90-day event history; a trail retains logs indefinitely in S3
+12. C — CloudTrail identifies the actor; Config validates the compliance rule

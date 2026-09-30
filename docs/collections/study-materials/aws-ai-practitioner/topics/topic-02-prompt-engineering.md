@@ -5,6 +5,18 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **Prompt components:** instruction, context, input data, output indicator.
+- **Zero-shot** = no examples · **few-shot** = example input/output pairs · **chain-of-thought** = "think step by step" for reasoning.
+- **Temperature:** low (0–0.2) = deterministic/factual; high (0.7–1.0) = creative. Top-P / Top-K also shape randomness.
+- **Templates** standardize and reuse prompts with `{{placeholders}}`.
+- Models are **stateless** — resend conversation history each call (or use the Converse API).
+- **Reduce hallucinations:** grounding instructions, RAG, Guardrails, lower temperature.
+- **System prompt** sets role/behavior; **user prompt** is the request.
+
+---
+
 ## What is Prompt Engineering?
 
 Prompt engineering is the practice of **optimizing textual input** to a Large Language Model (LLM) to obtain desired responses. It helps LLMs perform a wide variety of tasks including classification, question answering, code generation, creative writing, summarization, and more.

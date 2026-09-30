@@ -5,6 +5,17 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **RAG:** no weight change; injects **current/private** data at inference; gives **citations**; cheap and easy to update. Best for frequently changing facts.
+- **Fine-tuning:** **changes weights**; teaches **style/tone/format/domain**; needs labeled data; costly; knowledge becomes stale. Best for stable, specialized tasks.
+- **Agents:** let a model **take actions** via tools/APIs (multi-step workflows) — RAG only *retrieves*.
+- **Try cheapest first:** prompt engineering → RAG → fine-tuning → RAG + fine-tuning.
+- **Fine-tuning is poor at inserting new facts** — use **RAG** for current knowledge.
+- **RAG infra:** embeddings + vector store + chunking + top-K similarity search.
+
+---
+
 ## Overview
 
 Both RAG and fine-tuning improve foundation model performance for specific use cases, but they solve **different problems** through different mechanisms. Choosing the right approach (or combination) is a core exam topic.
@@ -130,6 +141,39 @@ These approaches are **not mutually exclusive**. Using both provides:
 
 ---
 
+## Agents: The Third Customization Approach
+
+The exam frames foundation-model customization as **three** approaches: **fine-tuning, RAG, and agents**. Fine-tuning and RAG make a model **know** more; agents let a model **do** more.
+
+| Approach | What it changes | Best for |
+|----------|-----------------|----------|
+| **Fine-tuning** | Model weights (style, tone, task behavior) | Stable, specialized tasks with a consistent format |
+| **RAG** | The **input** (adds retrieved context) | Frequently changing or private **knowledge**; grounded, cited answers |
+| **Agents** | The **workflow** (plans and calls tools) | Multi-step tasks that must **take actions** (API calls, transactions) |
+
+> **Key distinction:** RAG only **retrieves information**; an **agent** can **take actions** by calling tools/APIs (look up an order, process a refund, send an email). If a scenario needs multi-step reasoning that *does* something, the answer is an **agent**, not RAG.
+
+### Agent vs. Standard Chatbot
+
+| | Agent | Standard Chatbot |
+|-|-------|------------------|
+| **Capability** | Plans and executes multi-step tasks using tools | Generates text responses only |
+| **Actions** | Calls APIs, databases, functions | Takes no external action |
+| **Complexity** | Needs careful prompting/tool design | Simpler to build, more limited |
+
+> On AWS, agents are built with **Amazon Bedrock Agents / AgentCore** — see [topic-01-amazon-bedrock.md](topic-01-amazon-bedrock.md).
+
+### Choosing the Approach (exam pattern)
+
+| Scenario signal | Lean toward |
+|-----------------|-------------|
+| "Frequently changing data" / "private data that must stay current" | **RAG** |
+| "Consistent specialized tone/style" / "stable task like legal review" | **Fine-tuning** |
+| "Multi-step task" / "take actions" / "orchestrate tools" | **Agent** |
+| "Insert new factual knowledge" | **RAG** (fine-tuning is poor at reliably adding new facts) |
+
+---
+
 ## Prompt Engineering as the First Option
 
 Before investing in RAG or fine-tuning, always try:
@@ -210,6 +254,27 @@ Before investing in RAG or fine-tuning, always try:
 - C) Increasing context window size
 - D) Using the Converse API
 
+**Q8.** A customer-service application must look up a customer's order, process a refund, and email a confirmation — a multi-step task that takes real actions. Which customization approach fits best?
+
+- A) RAG, because it retrieves the order details
+- B) An agent, because it plans and executes actions using tools
+- C) Fine-tuning on past refund emails
+- D) Prompt engineering alone
+
+**Q9.** A team needs their assistant to answer questions using this quarter's brand-new internal sales figures. Why is fine-tuning a poor choice for inserting this knowledge?
+
+- A) Fine-tuning cannot run on AWS
+- B) Fine-tuning is best for style/behavior and is unreliable at inserting new facts; RAG is the correct choice for current factual data
+- C) Fine-tuning always causes hallucinations
+- D) Fine-tuning requires a vector database
+
+**Q10.** What is the key difference between a RAG system and an agent?
+
+- A) RAG changes model weights; agents do not
+- B) RAG only retrieves information to ground an answer; an agent can take actions by calling tools/APIs
+- C) Agents cannot use a knowledge base
+- D) There is no difference; the terms are interchangeable
+
 ---
 
 **Answers:**
@@ -220,3 +285,6 @@ Before investing in RAG or fine-tuning, always try:
 5. C — Distillation transfers a teacher model's capability to a smaller student model
 6. C — Knowledge Bases RAG provides per-response citations to source documents
 7. B — Instruction fine-tuning embeds behavior in weights, reducing prompt overhead
+8. B — Multi-step tasks that take actions require an agent orchestrating tools
+9. B — Fine-tuning adapts style/behavior, not reliable fact insertion; use RAG for current facts
+10. B — RAG retrieves context; an agent additionally acts by invoking tools/APIs

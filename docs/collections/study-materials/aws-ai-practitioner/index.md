@@ -33,6 +33,8 @@
 
 These topic files cover the full exam blueprint across all five domains. The first five are the highest-weight GenAI-centric topics; topics 6–10 cover fundamentals, AWS services, and governance.
 
+> **Fast revision:** Every topic file opens with a **Quick Revision (TL;DR)** cheat sheet and ends with a **Knowledge Test**. For last-minute review, read the TL;DR of each topic, then drill the knowledge tests.
+
 | # | Topic | File | Exam Weight |
 |---|-------|------|-------------|
 | 1 | Amazon Bedrock (Models, Agents, Knowledge Bases, Guardrails) | [topic-01-amazon-bedrock.md](topics/topic-01-amazon-bedrock.md) | Very High |

@@ -5,6 +5,23 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+| Metric | Task | Key idea |
+|--------|------|----------|
+| **ROUGE** | Summarization | Recall of n-gram overlap |
+| **BLEU** | Translation | Precision of n-gram overlap + brevity penalty |
+| **BERTScore** | Semantic similarity | Embedding-based (catches paraphrase) |
+| **Perplexity** | Language modeling | Lower = better prediction |
+| **F1 / Exact Match** | Classification / QA | Precision-recall balance / exact string |
+| **Pass@k / HumanEval** | Code generation | Does generated code pass tests |
+| **MMLU** | General knowledge | 57-subject benchmark |
+
+- **Lexical metrics** (ROUGE/BLEU) are fast but miss meaning; **semantic** (BERTScore) is accurate but costly; **human eval** is the gold standard.
+- **Amazon Bedrock Model Evaluation** = automatic metrics + managed human evaluation; compares models side by side.
+
+---
+
 ## Why Evaluation Metrics Matter
 
 Foundation models must be evaluated **objectively and systematically** before deployment. Different metrics suit different task types — choosing the wrong metric gives a misleading picture of model quality.

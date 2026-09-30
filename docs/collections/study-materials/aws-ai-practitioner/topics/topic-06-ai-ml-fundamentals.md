@@ -7,6 +7,19 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **Nesting:** AI ⊃ ML ⊃ Deep Learning ⊃ Generative AI.
+- **ML types:** **supervised** (labeled → classification/regression), **unsupervised** (unlabeled → clustering/anomaly), **reinforcement** (agent + reward).
+- **Lifecycle:** problem → data prep → train → **evaluate** → deploy (**inference**) → monitor/retrain (loop).
+- **Phase ID:** learns/adjusts weights = **training**; tested on held-out labels = **evaluation**; predicts on new live data = **inference** (no learning).
+- **Overfitting** = train ≫ test; **underfitting** = both low. Fix overfit with more data/regularization/simpler model.
+- **Split:** training (~70–80%) / validation (tune) / test (final, unseen).
+- **Metrics:** accuracy (balanced), **precision** (costly FP), **recall** (costly FN), **F1** (imbalanced); regression = MAE/RMSE/R².
+- **Features** = inputs; **label** = the answer being predicted. **Concept drift** → retrain.
+
+---
+
 ## The AI Hierarchy
 
 Understanding how these terms nest is a common exam question.
@@ -180,6 +193,71 @@ A dataset is split into three parts to build and honestly evaluate a model.
 | **Asynchronous inference** | Queued requests, large payloads, near-real-time | Large images, long audio |
 | **Serverless inference** | Auto-scales, pay-per-use, scales to zero | Intermittent / spiky traffic |
 
+> **Exam trap:** Inference is **not** learning. During inference the model's parameters are **fixed** — it only applies patterns learned during training. "A model classifies transactions in a live app" = inference; "a model is tested on a held-out labeled dataset" = evaluation; "a model is retrained on new data" = training.
+
+---
+
+## Training vs. Inference vs. Evaluation
+
+The exam frequently describes a scenario and asks which lifecycle phase it is. Match the scenario to the phase.
+
+| Phase | What happens | Data used | Key signal in the question |
+|-------|-------------|-----------|----------------------------|
+| **Training** | Model adjusts internal parameters to minimize error | Labeled **training set** | "learns", "adjusts weights", "is retrained on new data" |
+| **Evaluation** | Measure performance on unseen data with known answers | Held-out **test set** (labeled) | "tested", "measured accuracy/F1", "compared predictions to labels" |
+| **Inference** | Trained model predicts on brand-new data | New, **unlabeled** production data | "in production", "predicts on new/live data", "real-time predictions" |
+
+> **Features vs. labels:** **Features** are the input variables the model uses (e.g., bedrooms, square footage). The **label** is the correct output it learns to predict (e.g., house price). Labels exist only in training/evaluation data — never in the new data seen at inference.
+
+---
+
+## Model Evaluation Metrics
+
+How you measure model quality depends on the task type. You don't need to calculate these on the exam, but you must know **what each measures**.
+
+### The Confusion Matrix (Classification)
+
+| | Predicted Positive | Predicted Negative |
+|-|--------------------|--------------------|
+| **Actual Positive** | True Positive (TP) | False Negative (FN) |
+| **Actual Negative** | False Positive (FP) | True Negative (TN) |
+
+### Classification Metrics
+
+| Metric | Formula (concept) | What it measures | Use when |
+|--------|-------------------|------------------|----------|
+| **Accuracy** | (TP+TN) / all | Overall fraction of correct predictions | Classes are **balanced** |
+| **Precision** | TP / (TP+FP) | Of predicted positives, how many were correct | **False positives** are costly (e.g., flagging good email as spam) |
+| **Recall (Sensitivity)** | TP / (TP+FN) | Of actual positives, how many were caught | **False negatives** are costly (e.g., missing fraud or disease) |
+| **F1 score** | Harmonic mean of precision & recall | Balance of precision and recall | Classes are **imbalanced**; both error types matter |
+
+> **Exam tip:** On **imbalanced** data, accuracy is misleading. A fraud model that predicts "not fraud" every time can be 99% accurate yet catch **zero** fraud — recall and F1 reveal this failure.
+
+> **Precision vs. recall trade-off:** Precision answers "when we say yes, are we right?" Recall answers "did we find all the real cases?" Raising one often lowers the other.
+
+### Regression Metrics
+
+| Metric | What it measures |
+|--------|------------------|
+| **MAE** (Mean Absolute Error) | Average absolute difference between prediction and actual |
+| **MSE / RMSE** | Average (root) squared error — penalizes large errors more |
+| **R² (coefficient of determination)** | Proportion of variance explained by the model (1.0 = perfect) |
+
+> For foundation-model / generative-output metrics (ROUGE, BLEU, BERTScore, Perplexity), see [topic-05-evaluation-metrics.md](topic-05-evaluation-metrics.md).
+
+---
+
+## Concept Drift
+
+**Concept drift** occurs when the real-world relationship between inputs and the target **changes over time**, degrading a deployed model's accuracy (e.g., customer behavior shifts after a pricing change; fraudsters invent new tactics).
+
+| Response | Description |
+|----------|-------------|
+| **Monitor** | Track production accuracy against a threshold |
+| **Retrain** | Collect new labeled data, retrain, re-evaluate, redeploy |
+
+> Drift is why the ML lifecycle is a **loop**, not a one-time build. See also SageMaker Model Monitor in [topic-08-amazon-sagemaker.md](topic-08-amazon-sagemaker.md).
+
 ---
 
 ## Types of Data
@@ -268,6 +346,41 @@ A dataset is split into three parts to build and honestly evaluate a model.
 - C) Asynchronous inference
 - D) Offline scoring
 
+**Q8.** A deployed fraud-detection model runs on new credit-card transactions in a production app, generating a fraud/not-fraud prediction for each. Which lifecycle phase is this?
+
+- A) Training
+- B) Evaluation
+- C) Inference
+- D) Feature engineering
+
+**Q9.** A dataset of 100,000 transactions contains only 500 fraud cases. A model reports 99.5% accuracy but catches almost no fraud. Which metric best exposes this problem?
+
+- A) Accuracy
+- B) Recall
+- C) Training loss
+- D) Batch size
+
+**Q10.** A medical screening model must minimize the number of sick patients it wrongly clears as healthy (false negatives). Which metric should the team prioritize?
+
+- A) Precision
+- B) Recall
+- C) Specificity of the training set
+- D) Learning rate
+
+**Q11.** In a house-price dataset with columns for bedrooms, square footage, location, and sale price, which column is the **label**?
+
+- A) Bedrooms
+- B) Square footage
+- C) Location
+- D) Sale price
+
+**Q12.** Six months after deployment, a model's accuracy drops because customer behavior changed following a pricing update. What is this called, and what is the standard response?
+
+- A) Overfitting; add regularization
+- B) Concept drift; collect new data and retrain
+- C) Underfitting; add more features
+- D) Data leakage; re-split the data
+
 ---
 
 **Answers:**
@@ -277,8 +390,9 @@ A dataset is split into three parts to build and honestly evaluate a model.
 4. C — Predicting a continuous numeric value is regression
 5. C — Validation is used for hyperparameter tuning and model selection
 6. B — Learning rate is set before training (hyperparameter); weights/bias are learned
-7. B — Synchronous, low-latency predictions require a real-time endpoint# Topic 06: AI and ML Fundamentals
-
-This page is the new collection location for the AI and ML fundamentals study topic.
-
-The detailed content will be migrated here from the legacy `aws-ai-practitioner/` source page.
+7. B — Synchronous, low-latency predictions require a real-time endpoint
+8. C — Predicting on new production data with fixed parameters is inference (no learning occurs)
+9. B — On imbalanced data, recall exposes missed positives that accuracy hides
+10. B — Minimizing false negatives means maximizing recall
+11. D — Sale price is the value being predicted (label); the rest are input features
+12. B — A shift in the input-target relationship over time is concept drift; retrain on fresh data

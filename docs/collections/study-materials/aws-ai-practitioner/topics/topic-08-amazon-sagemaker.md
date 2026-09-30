@@ -7,6 +7,17 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **SageMaker** = build / train / deploy **custom** ML models (full control, ML expertise). **Bedrock** = consume **pre-built FMs** via API.
+- **Data:** Ground Truth (**labeling**), Data Wrangler (prep), Feature Store, **Canvas** (**no-code** for analysts), **JumpStart** (model hub + FMs + templates).
+- **Train/tune:** Training Jobs, **Automatic Model Tuning (HPO)**, Experiments.
+- **Deploy:** real-time endpoint, **serverless**, **asynchronous**, **batch transform**.
+- **MLOps/governance:** **Model Monitor** (drift), **Model Registry** (versioning/approval), **Model Cards** (governance docs), **Clarify** (bias + explainability), Pipelines (CI/CD).
+- **Drift:** data drift (input shifts) vs concept drift (input→target relationship shifts) → monitor + retrain.
+
+---
+
 ## What is Amazon SageMaker?
 
 Amazon SageMaker AI is a **fully managed service** to **build, train, and deploy** machine learning models at scale. It covers the entire ML lifecycle in one platform.
@@ -177,8 +188,4 @@ Amazon SageMaker AI is a **fully managed service** to **build, train, and deploy
 3. B — Ground Truth is the managed data labeling service
 4. B — Bedrock = managed FMs via API; SageMaker = build/train/host custom models
 5. B — Model Registry handles versioning and deployment approval
-6. A — Automatic Model Tuning (HPO) searches hyperparameter space# Topic 08: Amazon SageMaker
-
-This page is the new collection location for the Amazon SageMaker study topic.
-
-The detailed content will be migrated here from the legacy `aws-ai-practitioner/` source page.
+6. A — Automatic Model Tuning (HPO) searches hyperparameter space

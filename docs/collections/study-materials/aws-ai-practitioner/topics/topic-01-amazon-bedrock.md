@@ -5,6 +5,17 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **Bedrock** = fully managed, **serverless** access to 100+ foundation models via one **unified API**; no infrastructure to manage; pay per token.
+- **Converse API** = recommended for **multi-turn**, model-agnostic chat.
+- **Knowledge Bases** = managed **RAG** (retrieve private data + citations). **Agents** = FM that **takes actions** via tools/APIs. **Guardrails** = safety/PII/grounding filters.
+- **Guardrail filters:** content (hate/violence/etc.), denied topics, word, **sensitive info (PII mask)**, **contextual grounding** (detect hallucination), **automated reasoning** (logical validation).
+- **Data privacy:** your prompts/completions are **not** used to train base models and are **not** shared with providers.
+- **Choose an FM by:** task type, context window, cost, latency, capability, modality.
+
+---
+
 ## What is Amazon Bedrock?
 
 Amazon Bedrock is a **fully managed service** that provides secure, enterprise-grade access to high-performing foundation models (FMs) from leading AI companies. It enables you to build and scale generative AI applications **without managing infrastructure**.

@@ -7,6 +7,19 @@
 
 ---
 
+## Quick Revision (TL;DR)
+
+- **Generative AI** creates new content; **discriminative** AI labels/classifies existing data.
+- **Foundation model (FM):** large, **pre-trained on broad unlabeled data (self-supervised)**, adaptable to many tasks. An **LLM** is an FM for text.
+- A **fine-tuned** model is **not** itself a foundation model.
+- **LLMs are next-token predictors** → fluent but can **hallucinate**.
+- **Transformer + self-attention** is the key architecture; **tokens** are billing/limit units; **context window** = max tokens in/out; **embeddings** = semantic vectors (power RAG).
+- **Adaptation cost order:** prompt engineering → RAG → fine-tuning → continued pre-training → train from scratch.
+- **Inference params:** low temperature = factual/deterministic; high = creative.
+- **Access FMs on AWS via Amazon Bedrock** (managed); SageMaker builds custom models.
+
+---
+
 ## What is Generative AI?
 
 Generative AI is a type of deep learning that **creates new content** — text, images, audio, video, or code — based on patterns learned from massive datasets. Unlike traditional (discriminative) ML that **classifies or predicts labels**, generative AI **produces novel output**.
@@ -37,6 +50,17 @@ A **foundation model** is a large ML model **pre-trained on vast, broad datasets
 | **Embedding models** | Vectors | Amazon Titan Embeddings, Cohere Embed |
 
 > On AWS, foundation models are accessed through **Amazon Bedrock** (managed FMs) — see [topic-01-amazon-bedrock.md](topic-01-amazon-bedrock.md).
+
+### Exam Traps: What Is (and Isn't) a Foundation Model
+
+| Trap | Reality |
+|------|---------|
+| "A model fine-tuned on medical records is a foundation model." | **No** — once adapted to a narrow task it is a **fine-tuned/customized model**, not the general-purpose FM it started from. |
+| "An FM was trained on 1,000 labeled support chats." | **No** — FMs are **pre-trained on massive *unlabeled* data using self-supervised learning**. Labeled data is used later for fine-tuning. |
+| "Use SageMaker to get a managed API for pre-built FMs." | **No** — **Amazon Bedrock** provides managed FM APIs. SageMaker is for building/training custom models. |
+| "An LLM that returns a link to an image is an image-generation model." | **No** — that is **text output** from an LLM. Judge a model by what it actually **produces**. |
+
+> **Parameters** are the model's learned weights ("knobs and dials") — more parameters generally allow more complex, nuanced behavior. Do not confuse **parameters** (learned during training) with **inference parameters** like temperature (set at request time).
 
 ---
 
@@ -237,6 +261,27 @@ See [topic-02-prompt-engineering.md](topic-02-prompt-engineering.md) for details
 - C) They lack a context window
 - D) They only use supervised learning
 
+**Q8.** A team fine-tunes a base model on their internal legal documents to create a contract-review assistant. Is the resulting model a foundation model?
+
+- A) Yes — any large model is a foundation model
+- B) No — it is a fine-tuned/customized model derived from a foundation model
+- C) Yes — fine-tuning creates a new foundation model
+- D) No — it is now a discriminative model
+
+**Q9.** Which statement about how foundation models are pre-trained is correct?
+
+- A) They are trained on small, carefully labeled datasets
+- B) They are trained on massive unlabeled datasets using self-supervised learning
+- C) They require reinforcement learning for all pre-training
+- D) They are trained only on structured tabular data
+
+**Q10.** A scenario asks which AWS service provides a fully managed, serverless API to access pre-built foundation models from multiple providers. Which is correct?
+
+- A) Amazon SageMaker
+- B) Amazon Comprehend
+- C) Amazon Bedrock
+- D) Amazon Kendra
+
 ---
 
 **Answers:**
@@ -246,8 +291,7 @@ See [topic-02-prompt-engineering.md](topic-02-prompt-engineering.md) for details
 4. B — Embeddings are semantic numerical vectors
 5. B — Lower temperature reduces randomness for factual consistency
 6. C — Foundation models are broadly pre-trained and adaptable
-7. B — Hallucination stems from probabilistic generation without factual grounding# Topic 07: Generative AI Fundamentals
-
-This page is the new collection location for the generative AI fundamentals study topic.
-
-The detailed content will be migrated here from the legacy `aws-ai-practitioner/` source page.
+7. B — Hallucination stems from probabilistic generation without factual grounding
+8. B — Adapting an FM to a narrow task yields a fine-tuned model, not a new foundation model
+9. B — FMs are pre-trained on vast unlabeled data via self-supervised learning
+10. C — Amazon Bedrock is the managed, serverless FM API; SageMaker builds custom models
